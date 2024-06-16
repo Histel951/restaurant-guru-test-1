@@ -84,10 +84,10 @@ class HtmlValidator implements Validator
     /**
      * Извлечение всех тегов HTML
      *
-     * @param $content
+     * @param string $content
      * @return array
      */
-    private function extractTags($content): array
+    private function extractTags(string $content): array
     {
         preg_match_all(self::HTML_TAGS_PATTERN, $content, $matches, PREG_SET_ORDER);
 
@@ -99,7 +99,7 @@ class HtmlValidator implements Validator
      *
      * @throws ClosureTagException
      */
-    private function validateTagNesting($tags): void
+    private function validateTagNesting(array $tags): void
     {
         $unclosedTagStack = [];
 
