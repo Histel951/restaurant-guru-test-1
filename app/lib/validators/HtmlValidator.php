@@ -131,6 +131,12 @@ class HtmlValidator implements Validator
         return array_pop($unclosedTagStack) !== $tagName;
     }
 
+    /**
+     * Проверка является ли тег закрывающим
+     *
+     * @param string $tag
+     * @return bool
+     */
     private function isClosingTag(string $tag): bool
     {
         return $tag[1] === '/';
