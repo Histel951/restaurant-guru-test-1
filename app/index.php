@@ -14,7 +14,7 @@ $validator = new HtmlValidator(
     Patterns::TAG_STRONG_PATTERN,
 );
 
-
+// тест
 var_dump($validator->validate('<strong>Unclosed strong tag</strong>')); // true
 var_dump($validator->validate('<a href="http://example.com" title="Example">Link</a>')); // true
 var_dump($validator->validate('<strong>Strong <i>Italic Text</strong></i>')); // false
