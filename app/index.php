@@ -15,7 +15,7 @@ $validator = new HtmlValidator(
 );
 
 // тест
-var_dump($validator->validate('<strong>Unclosed strong tag</strong>')); // true
-var_dump($validator->validate('<a href="http://example.com" title="Example">Link</a>')); // true
-var_dump($validator->validate('<strong>Strong <i>Italic Text</strong></i>')); // false
-var_dump($validator->validate('<strong>Unclosed strong tag')); // false
+var_dump($validator->validate('<strong>Жирный шрифт</strong>')); // true
+var_dump($validator->validate('<a href="https://google.com" title="Google">google</a>')); // true
+var_dump($validator->validate('<strong>Жирный текст <i>италик с неправильным закрытием тегов</strong></i>')); // false
+var_dump($validator->validate('<strong>Не закрытый тег')); // false
