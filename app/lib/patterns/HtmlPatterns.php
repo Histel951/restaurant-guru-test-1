@@ -2,6 +2,11 @@
 
 namespace App\Lib\Patterns;
 
+/**
+ * Паттерны используемые для HTML валидации
+ *
+ * @package HtmlPatterns
+ */
 class HtmlPatterns
 {
     public const TAG_A_PATTERN = '<a href="[^"]*" title="[^"]*">|<\/a>';
