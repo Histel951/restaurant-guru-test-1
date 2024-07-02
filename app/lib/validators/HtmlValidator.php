@@ -69,15 +69,15 @@ class HtmlValidator implements Validator
     /**
      * Валидация html
      *
-     * @param string $html
+     * @param string $data
      * @return bool
      */
-    public function validate(string $html): bool
+    public function validate($data): bool
     {
         try {
-            $this->checkAllowedTags($html);
-            $this->checkTagClosureAndNesting($html);
-            $this->checkAttributes($html);
+            $this->checkAllowedTags($data);
+            $this->checkTagClosureAndNesting($data);
+            $this->checkAttributes($data);
         } catch (AllowedTagException | ClosureTagException | AllowedAttributeException $exception) {
             // здесь можно было бы добавить например логгирование, для наглядного результата работы выведу сообщения об ошибке
             echo '<br> - ' . $exception->getMessage() . ' = ';

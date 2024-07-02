@@ -5,8 +5,8 @@ namespace App\Lib\Validators;
 interface Validator
 {
     /**
-     * @param string $html
+     * @param mixed $data
      * @return bool
      */
-    public function validate(string $html): bool;
+    public function validate($data): bool;
 }
