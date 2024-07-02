@@ -9,13 +9,13 @@ namespace App\Lib\Patterns;
  */
 class HtmlPatterns
 {
-    public const TAG_A_PATTERN = '<a>|<\/a>';
+    public const TAG_A = '<a>|<\/a>';
 
-    public const TAG_CODE_PATTERN = '<code>|<\/code>';
+    public const TAG_CODE = '<code>|<\/code>';
 
-    public const TAG_I_PATTERN = '<i>|<\/i>';
+    public const TAG_I = '<i>|<\/i>';
 
-    public const TAG_STRIKE_PATTERN = '<strike>|<\/strike>';
+    public const TAG_STRIKE = '<strike>|<\/strike>';
 
-    public const TAG_STRONG_PATTERN = '<strong>|<\/strong>';
+    public const TAG_STRONG = '<strong>|<\/strong>';
 }

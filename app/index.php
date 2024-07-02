@@ -1,22 +1,22 @@
 <?php
 
-use App\Lib\Patterns\HtmlPatterns as Patterns;
-use App\Lib\Patterns\AttributePatterns as Attribute;
+use App\Lib\Patterns\HtmlPatterns;
+use App\Lib\Patterns\HtmlAttributePatterns;
 use App\Lib\Validators\HtmlValidator;
 
 require_once "lib/validators/HtmlValidator.php";
 require_once "lib/patterns/HtmlPatterns.php";
-require_once "lib/patterns/AttributePatterns.php";
+require_once "lib/patterns/HtmlAttributePatterns.php";
 
 $validator = new HtmlValidator([
-    Patterns::TAG_A_PATTERN,
-    Patterns::TAG_I_PATTERN,
-    Patterns::TAG_CODE_PATTERN,
-    Patterns::TAG_STRIKE_PATTERN,
-    Patterns::TAG_STRONG_PATTERN,
+    HtmlPatterns::TAG_A,
+    HtmlPatterns::TAG_I,
+    HtmlPatterns::TAG_CODE,
+    HtmlPatterns::TAG_STRIKE,
+    HtmlPatterns::TAG_STRONG,
 ], [
-    Attribute::ATTRIBUTE_HREF_PATTERN,
-    Attribute::ATTRIBUTE_TITLE_PATTERN,
+    HtmlAttributePatterns::ATTRIBUTE_HREF,
+    HtmlAttributePatterns::ATTRIBUTE_TITLE,
 ]);
 
 // Тесты
@@ -31,9 +31,9 @@ var_dump($validator->validate('<strong>Незакрытый тег')); // false 
 
 // Тесты если передать не все возможные паттерны
 $validatorATag = new HtmlValidator([
-    Patterns::TAG_A_PATTERN,
+    HtmlPatterns::TAG_A,
 ], [
-    Attribute::ATTRIBUTE_HREF_PATTERN,
+    HtmlAttributePatterns::ATTRIBUTE_HREF,
 ]);
 
 var_dump($validatorATag->validate('<a href="https://google.com">google</a>')); // true
