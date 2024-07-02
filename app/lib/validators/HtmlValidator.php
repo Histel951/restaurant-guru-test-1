@@ -30,7 +30,7 @@ class HtmlValidator implements Validator
     private array $allowedPatterns;
     private array $allowedAttributes;
 
-    public function __construct(array $allowedPatterns, array $allowedAttributes)
+    public function __construct(array $allowedPatterns, array $allowedAttributes = [])
     {
         $this->allowedPatterns = $allowedPatterns;
         $this->allowedAttributes = $allowedAttributes;
@@ -62,8 +62,19 @@ class HtmlValidator implements Validator
      */
     private function checkAllowedTags(string $requestData): void
     {
-        if (!preg_match_all($this->combineAllowedTagsPatterns(), $requestData)) {
-            throw new AllowedTagException();
+        $tags = $this->extractTags($requestData);
+        $combinePattern = $this->combineAllowedTagsPatterns();
+
+        foreach ($tags as $tagMatch) {
+            $tag = $tagMatch[0];
+
+            if (preg_match('/<\/?([a-z]+)[^>]*>/i', $tag, $matches)) {
+                $tagName = $matches[1];
+
+                if (!preg_match($combinePattern, "<$tagName>") && !preg_match($combinePattern, "</$tagName>")) {
+                    throw new AllowedTagException("Недопустимый тег: <$tagName>");
+                }
+            }
         }
     }
 
@@ -99,7 +110,6 @@ class HtmlValidator implements Validator
     private function extractTags(string $content): array
     {
         preg_match_all(self::HTML_TAGS_PATTERN, $content, $matches, PREG_SET_ORDER);
-
         return $matches;
     }
 

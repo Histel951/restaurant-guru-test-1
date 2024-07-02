@@ -22,6 +22,20 @@ $validator = new HtmlValidator([
 // Тесты
 var_dump($validator->validate('<strong>Жирный шрифт</strong>')); // true
 var_dump($validator->validate('<a href="https://google.com" title="Google">google</a>')); // true
+var_dump($validator->validate('<a title="Google">google</a>')); // true
+var_dump($validator->validate('<a href="https://google.com">google</a>')); // true
+var_dump($validator->validate('<div>test</div><a href="https://google.com" title="Google">google</a>')); // false (недопустимый тег <div>)
 var_dump($validator->validate('<a href="https://google.com" title="Google" data-test="1">google</a>')); // false (недопустимый атрибут data-test)
 var_dump($validator->validate('<strong>Жирный текст <i>италик с неправильным закрытием тегов</strong></i>')); // false (неправильное закрытие тегов)
-var_dump($validator->validate('<strong>Не закрытый тег')); // false (незакрытый тег)
+var_dump($validator->validate('<strong>Незакрытый тег')); // false (незакрытый тег)
+
+// Тест если передать не все возможные паттерны
+$validatorATag = new HtmlValidator([
+    Patterns::TAG_A_PATTERN,
+], [
+    Attribute::ATTRIBUTE_HREF_PATTERN
+]);
+
+var_dump($validatorATag->validate('<a href="https://google.com">google</a>')); // true
+var_dump($validatorATag->validate('<a href="https://google.com" title="Google">google</a>')); // false (недопустимый аттрибут title)
+var_dump($validatorATag->validate('<i><a href="https://google.com">google</a></i>')); // false (недопустимый тег <i>)
