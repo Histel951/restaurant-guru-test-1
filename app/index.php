@@ -33,7 +33,7 @@ var_dump($validator->validate('<strong>Незакрытый тег')); // false 
 $validatorATag = new HtmlValidator([
     Patterns::TAG_A_PATTERN,
 ], [
-    Attribute::ATTRIBUTE_HREF_PATTERN
+    Attribute::ATTRIBUTE_HREF_PATTERN,
 ]);
 
 var_dump($validatorATag->validate('<a href="https://google.com">google</a>')); // true
