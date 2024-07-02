@@ -25,9 +25,25 @@ if (
 
 class HtmlValidator implements Validator
 {
+    /**
+     * Общий паттерн для html тегов
+     *
+     * @var string
+     */
     public const HTML_TAGS_PATTERN = '/<\/?([a-z]+)(?: [^>]+)?>/i';
 
+    /**
+     * Паттерны допустимых html тегов
+     *
+     * @var array
+     */
     private array $allowedTagPatterns;
+
+    /**
+     * Паттерны допустимых аттрибутов для html тегов
+     *
+     * @var array
+     */
     private array $allowedAttributePatterns;
 
     public function __construct(array $allowedTagPatterns, array $allowedAttributePatterns = [])
@@ -58,7 +74,7 @@ class HtmlValidator implements Validator
     }
 
     /**
-     * Проверка допустимых HTML тегов
+     * Проверка допустимых html тегов
      *
      * @throws AllowedTagException
      */
@@ -92,7 +108,7 @@ class HtmlValidator implements Validator
     }
 
     /**
-     * Проверка на корректное закрытие и вложенность тегов HTML
+     * Проверка на корректное закрытие и вложенность тегов html
      *
      * @param string $requestData
      * @throws ClosureTagException
@@ -104,7 +120,7 @@ class HtmlValidator implements Validator
     }
 
     /**
-     * Извлечение всех тегов HTML
+     * Извлечение всех тегов html
      *
      * @param string $content
      * @return array
@@ -164,7 +180,7 @@ class HtmlValidator implements Validator
     }
 
     /**
-     * Проверка допустимых атрибутов HTML тегов
+     * Проверка допустимых атрибутов html тегов
      *
      * @param string $requestData
      * @throws AllowedAttributeException
