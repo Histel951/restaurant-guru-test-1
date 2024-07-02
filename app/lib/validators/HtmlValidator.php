@@ -26,11 +26,25 @@ if (
 class HtmlValidator implements Validator
 {
     /**
-     * Общий паттерн для html тегов
+     * Паттер для html тегов
      *
      * @var string
      */
-    public const HTML_TAGS_PATTERN = '/<\/?([a-z]+)(?: [^>]+)?>/i';
+    public const HTML_TAG_PATTERN = '/<\/?([a-z]+)[^>]*>/i';
+
+    /**
+     * Паттерн для html тегов вместе с аттрибутами
+     *
+     * @var string
+     */
+    public const HTML_TAGS_WITH_ATTRIBUTES_PATTERN = '/<\/?([a-z]+)(?: [^>]+)?>/i';
+
+    /**
+     * Паттер html аттрибутов
+     *
+     * @var string
+     */
+    public const HTML_ATTRIBUTE_PATTERN = '/([a-zA-Z\-]+)="([^"]+)"/';
 
     /**
      * Паттерны допустимых html тегов
@@ -86,7 +100,7 @@ class HtmlValidator implements Validator
         foreach ($tags as $tagMatch) {
             $tag = $tagMatch[0];
 
-            if (preg_match('/<\/?([a-z]+)[^>]*>/i', $tag, $matches)) {
+            if (preg_match(self::HTML_TAG_PATTERN, $tag, $matches)) {
                 $tagName = $matches[1];
 
                 if (!preg_match($combinePattern, "<$tagName>") && !preg_match($combinePattern, "</$tagName>")) {
@@ -127,7 +141,7 @@ class HtmlValidator implements Validator
      */
     private function extractTags(string $content): array
     {
-        preg_match_all(self::HTML_TAGS_PATTERN, $content, $matches, PREG_SET_ORDER);
+        preg_match_all(self::HTML_TAGS_WITH_ATTRIBUTES_PATTERN, $content, $matches, PREG_SET_ORDER);
         return $matches;
     }
 
@@ -190,7 +204,7 @@ class HtmlValidator implements Validator
         $tags = $this->extractTags($requestData);
 
         foreach ($tags as $tagMatch) {
-            preg_match_all('/([a-zA-Z\-]+)="([^"]+)"/', $tagMatch[0], $attributeMatches, PREG_SET_ORDER);
+            preg_match_all(self::HTML_ATTRIBUTE_PATTERN, $tagMatch[0], $attributeMatches, PREG_SET_ORDER);
 
             foreach ($attributeMatches as $attributeMatch) {
                 $attributeName = $attributeMatch[1];
