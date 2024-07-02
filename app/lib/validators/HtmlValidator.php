@@ -27,13 +27,13 @@ class HtmlValidator implements Validator
 {
     public const HTML_TAGS_PATTERN = '/<\/?([a-z]+)(?: [^>]+)?>/i';
 
-    private array $allowedPatterns;
-    private array $allowedAttributes;
+    private array $allowedTagPatterns;
+    private array $allowedAttributePatterns;
 
-    public function __construct(array $allowedPatterns, array $allowedAttributes = [])
+    public function __construct(array $allowedTagPatterns, array $allowedAttributePatterns = [])
     {
-        $this->allowedPatterns = $allowedPatterns;
-        $this->allowedAttributes = $allowedAttributes;
+        $this->allowedTagPatterns = $allowedTagPatterns;
+        $this->allowedAttributePatterns = $allowedAttributePatterns;
     }
 
     /**
@@ -87,7 +87,7 @@ class HtmlValidator implements Validator
      */
     private function combineAllowedTagsPatterns(): string
     {
-        $combinedPattern = implode('|', $this->allowedPatterns);
+        $combinedPattern = implode('|', $this->allowedTagPatterns);
         return '/(' . $combinedPattern . ')/i';
     }
 
@@ -196,7 +196,7 @@ class HtmlValidator implements Validator
      */
     private function isValidAttribute(string $attributeName, string $attributeValue): bool
     {
-        foreach ($this->allowedAttributes as $pattern) {
+        foreach ($this->allowedAttributePatterns as $pattern) {
             if (preg_match($pattern, "$attributeName=\"$attributeValue\"")) {
                 return true;
             }
