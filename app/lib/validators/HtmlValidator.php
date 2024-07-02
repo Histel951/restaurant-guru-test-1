@@ -53,7 +53,7 @@ class HtmlValidator implements Validator
     }
 
     /**
-     * Валидация HTML
+     * Валидация html
      *
      * @param string $requestData
      * @return bool
