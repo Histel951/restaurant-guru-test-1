@@ -49,6 +49,8 @@ class HtmlValidator implements Validator
             $this->checkTagClosureAndNesting($requestData);
             $this->checkAttributes($requestData);
         } catch (AllowedTagException | ClosureTagException | AllowedAttributeException $exception) {
+            // здесь можно было бы добавить например логгирование, для наглядного результата работы выведу сообщения об ошибке
+            echo '<br> - ' . $exception->getMessage() . ' = ';
             return false;
         }
 
@@ -72,7 +74,7 @@ class HtmlValidator implements Validator
                 $tagName = $matches[1];
 
                 if (!preg_match($combinePattern, "<$tagName>") && !preg_match($combinePattern, "</$tagName>")) {
-                    throw new AllowedTagException("Недопустимый тег: <$tagName>");
+                    throw new AllowedTagException("Недопустимый тег: '$tagName'");
                 }
             }
         }
@@ -126,7 +128,7 @@ class HtmlValidator implements Validator
             $tagName = $tagMatch[1];
             if ($this->isClosingTag($tagMatch[0])) {
                 if (empty($unclosedTagStack) || $this->checkLastClosedTagMatchCurrentTag($unclosedTagStack, $tagName)) {
-                    throw new ClosureTagException("Недопустимое закрытие или вложенность тега.");
+                    throw new ClosureTagException("Недопустимое закрытие или вложенность тега: '$tagName'");
                 }
             } else {
                 $unclosedTagStack[] = $tagName;
@@ -134,7 +136,7 @@ class HtmlValidator implements Validator
         }
 
         if (!empty($unclosedTagStack)) {
-            throw new ClosureTagException("Есть незакрытые теги: " . implode(', ', $unclosedTagStack));
+            throw new ClosureTagException("Есть незакрытые теги: '" . implode('\', \'', $unclosedTagStack) . '\'');
         }
     }
 
