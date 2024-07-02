@@ -5,8 +5,8 @@ namespace App\Lib\Validators;
 interface Validator
 {
     /**
-     * @param string $requestData
+     * @param string $html
      * @return bool
      */
-    public function validate(string $requestData): bool;
+    public function validate(string $html): bool;
 }

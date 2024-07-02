@@ -69,15 +69,15 @@ class HtmlValidator implements Validator
     /**
      * Валидация html
      *
-     * @param string $requestData
+     * @param string $html
      * @return bool
      */
-    public function validate(string $requestData): bool
+    public function validate(string $html): bool
     {
         try {
-            $this->checkAllowedTags($requestData);
-            $this->checkTagClosureAndNesting($requestData);
-            $this->checkAttributes($requestData);
+            $this->checkAllowedTags($html);
+            $this->checkTagClosureAndNesting($html);
+            $this->checkAttributes($html);
         } catch (AllowedTagException | ClosureTagException | AllowedAttributeException $exception) {
             // здесь можно было бы добавить например логгирование, для наглядного результата работы выведу сообщения об ошибке
             echo '<br> - ' . $exception->getMessage() . ' = ';
@@ -92,9 +92,9 @@ class HtmlValidator implements Validator
      *
      * @throws AllowedTagException
      */
-    private function checkAllowedTags(string $requestData): void
+    private function checkAllowedTags(string $html): void
     {
-        $tags = $this->extractTags($requestData);
+        $tags = $this->extractTags($html);
         $combinePattern = $this->combineAllowedTagsPatterns();
 
         foreach ($tags as $tagMatch) {
@@ -124,12 +124,12 @@ class HtmlValidator implements Validator
     /**
      * Проверка на корректное закрытие и вложенность тегов html
      *
-     * @param string $requestData
+     * @param string $html
      * @throws ClosureTagException
      */
-    private function checkTagClosureAndNesting(string $requestData): void
+    private function checkTagClosureAndNesting(string $html): void
     {
-        $tags = $this->extractTags($requestData);
+        $tags = $this->extractTags($html);
         $this->validateTagNesting($tags);
     }
 
@@ -196,12 +196,12 @@ class HtmlValidator implements Validator
     /**
      * Проверка допустимых атрибутов html тегов
      *
-     * @param string $requestData
+     * @param string $html
      * @throws AllowedAttributeException
      */
-    private function checkAttributes(string $requestData): void
+    private function checkAttributes(string $html): void
     {
-        $tags = $this->extractTags($requestData);
+        $tags = $this->extractTags($html);
 
         foreach ($tags as $tagMatch) {
             preg_match_all(self::HTML_ATTRIBUTE_PATTERN, $tagMatch[0], $attributeMatches, PREG_SET_ORDER);
