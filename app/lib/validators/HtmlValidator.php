@@ -6,26 +6,34 @@ namespace App\Lib\Validators;
 
 use App\Lib\Exceptions\AllowedTagException;
 use App\Lib\Exceptions\ClosureTagException;
-
-if (file_exists(__DIR__ . "/../exceptions/AllowedTagException.php")) {
-    require_once __DIR__ . "/../exceptions/AllowedTagException.php";
-    require_once __DIR__ . "/../exceptions/ClosureTagException.php";
-} else {
-    echo "Exception files not founded.";
-    exit;
-}
+use App\Lib\Exceptions\AllowedAttributeException;
 
 require_once "Validator.php";
+
+if (
+    file_exists(__DIR__ . "/../exceptions/AllowedTagException.php")
+    || file_exists(__DIR__ . "/../exceptions/AllowedAttributeException.php")
+    || file_exists(__DIR__ . "/../exceptions/ClosureTagException.php")
+) {
+    require_once __DIR__ . "/../exceptions/AllowedTagException.php";
+    require_once __DIR__ . "/../exceptions/AllowedAttributeException.php";
+    require_once __DIR__ . "/../exceptions/ClosureTagException.php";
+} else {
+    echo "Exception files not found.";
+    exit;
+}
 
 class HtmlValidator implements Validator
 {
     public const HTML_TAGS_PATTERN = '/<\/?([a-z]+)(?: [^>]+)?>/i';
 
     private array $allowedPatterns;
+    private array $allowedAttributes;
 
-    public function __construct(...$allowedPatterns)
+    public function __construct(array $allowedPatterns, array $allowedAttributes)
     {
         $this->allowedPatterns = $allowedPatterns;
+        $this->allowedAttributes = $allowedAttributes;
     }
 
     /**
@@ -39,7 +47,8 @@ class HtmlValidator implements Validator
         try {
             $this->checkAllowedTags($requestData);
             $this->checkTagClosureAndNesting($requestData);
-        } catch (AllowedTagException|ClosureTagException $exception) {
+            $this->checkAttributes($requestData);
+        } catch (AllowedTagException | ClosureTagException | AllowedAttributeException $exception) {
             return false;
         }
 
@@ -47,7 +56,7 @@ class HtmlValidator implements Validator
     }
 
     /**
-     * Проверку допустимых HTML тегов
+     * Проверка допустимых HTML тегов
      *
      * @throws AllowedTagException
      */
@@ -59,7 +68,7 @@ class HtmlValidator implements Validator
     }
 
     /**
-     * Соединение всех переданных паттернов для тегов в 1 для проверки
+     * Соединение всех переданных паттернов для тегов в один для проверки
      *
      * @return string
      */
@@ -95,7 +104,7 @@ class HtmlValidator implements Validator
     }
 
     /**
-     * Проверяет данные на не закрытые теги и корректность вложенности
+     * Проверяет данные на незакрытые теги и корректность вложенности
      *
      * @throws ClosureTagException
      */
@@ -115,12 +124,12 @@ class HtmlValidator implements Validator
         }
 
         if (!empty($unclosedTagStack)) {
-            throw new ClosureTagException("Есть не закрытые теги: " . implode(', ', $unclosedTagStack));
+            throw new ClosureTagException("Есть незакрытые теги: " . implode(', ', $unclosedTagStack));
         }
     }
 
     /**
-     * Проверяет что последний открытый тег соответствует текущему закрывающему тегу
+     * Проверяет, что последний открытый тег соответствует текущему закрывающему тегу
      *
      * @param array $unclosedTagStack
      * @param string $tagName
@@ -140,5 +149,47 @@ class HtmlValidator implements Validator
     private function isClosingTag(string $tag): bool
     {
         return $tag[1] === '/';
+    }
+
+    /**
+     * Проверка допустимых атрибутов HTML тегов
+     *
+     * @param string $requestData
+     * @throws AllowedAttributeException
+     */
+    private function checkAttributes(string $requestData): void
+    {
+        $tags = $this->extractTags($requestData);
+
+        foreach ($tags as $tagMatch) {
+            preg_match_all('/([a-zA-Z\-]+)="([^"]+)"/', $tagMatch[0], $attributeMatches, PREG_SET_ORDER);
+
+            foreach ($attributeMatches as $attributeMatch) {
+                $attributeName = $attributeMatch[1];
+                $attributeValue = $attributeMatch[2];
+
+                if (!$this->isValidAttribute($attributeName, $attributeValue)) {
+                    throw new AllowedAttributeException("Недопустимый атрибут '$attributeName' для тега '$tagMatch[1]'");
+                }
+            }
+        }
+    }
+
+    /**
+     * Проверяет, является ли атрибут допустимым для данного тега
+     *
+     * @param string $attributeName
+     * @param string $attributeValue
+     * @return bool
+     */
+    private function isValidAttribute(string $attributeName, string $attributeValue): bool
+    {
+        foreach ($this->allowedAttributes as $pattern) {
+            if (preg_match($pattern, "$attributeName=\"$attributeValue\"")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

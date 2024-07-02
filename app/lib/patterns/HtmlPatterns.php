@@ -9,7 +9,7 @@ namespace App\Lib\Patterns;
  */
 class HtmlPatterns
 {
-    public const TAG_A_PATTERN = '<a href="[^"]*" title="[^"]*">|<\/a>';
+    public const TAG_A_PATTERN = '<a>|<\/a>';
 
     public const TAG_CODE_PATTERN = '<code>|<\/code>';
 
